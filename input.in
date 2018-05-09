@@ -1,0 +1,27 @@
+&SYSTEM
+  MODEL_POTENTIAL = "tully_1"
+  N_DOF = 1           ! Tully’s models are 1D
+  X_POINTS = 4001     ! check with wc -l *_bopes.dat
+  Y_POINTS = 1        
+  Z_POINTS = 1
+  NSTATES = 2
+  EL_BASIS = "adiabatic"
+  AD_TO_DIA = "y"
+/
+&DYNAMICS
+  FINAL_TIME = 2000.0
+  DT = 0.5
+  DUMP = 50
+  INITIAL_BOSTATE = 0
+  INITIAL_DIASTATE = 1
+  NTRAJ = 200
+  R_INIT = -10.0
+  K_INIT = 25.0
+  SIGMA_INIT = 0.0      ! if sigma = 0.0, then sigma = 20/k0 in the code
+  MASS_INPUT = 1.0
+/
+&EXTERNAL_FILES
+  PATH_TO_POTENTIALS = "./electron_transfer/"
+  POSITIONS_FILE = ""
+  MOMENTA_FILE = ""
+/
