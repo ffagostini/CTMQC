@@ -55,6 +55,8 @@ module variables
   integer :: dump=1
   integer :: initial_BOstate=0
   integer :: initial_DIAstate=1
+  real(kind=dp) :: viscosity
+  real(kind=dp) :: temperature
   namelist /dynamics/ final_time,dt,dump,initial_BOstate, &
     initial_DIAstate,ntraj,r_init,k_init,sigma_init,mass_input, &
     viscosity,temperature
