@@ -26,6 +26,8 @@ module tools
 
     allocate(Hel(nstates,nstates,x_points,y_points,z_points),stat=check)
     if(check/=0) print*,'error allocation Hel'
+    allocate(transformation_matrix(nstates,nstates,x_points,y_points,z_points),stat=check)
+    if(check/=0) print*,'error allocation transformation_matrix'
 
     allocate(density(x_points),stat=check)
     if(check/=0) print*,'error density'
@@ -118,6 +120,8 @@ module tools
 
     deallocate(Hel,stat=check)
     if(check/=0) print*,'error Hel'
+    deallocate(transformation_matrix)
+    if(check/=0) print*,'error transformation_matrix'
 
     deallocate(BO_pop,stat=check)
     if(check/=0) print*,'error BO_pop'
@@ -159,7 +163,7 @@ module tools
   subroutine change_basis
 
     use linear_algebra
-    use read_diabatic_potential
+    use read_diabatic_properties
 
     call read_diabatic_hamiltonian
 

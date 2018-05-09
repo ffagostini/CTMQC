@@ -29,9 +29,13 @@ module variables
   !! specified. The program works with adiabatic electronic states, therefore it should
   !! be indicated in the input file if the diabatic Hamiltonian is given, such that
   !! the diagonalization routine is invoked.
+  character(len=1) :: dia_to_ad="n" !< Request if the electronic populations should
+  !! written in output also in the diabatic basis.
+  real(kind=dp),allocatable :: transformation_matrix(:,:,:,:,:)!< Transformation matrix from
+  !! diabatic to adiabatic basis.
   integer :: npairs=1 !< The number of pairs of electronic states, without double counting.
   namelist /system/ model_potential,n_dof,x_points, &
-    y_points,z_points,nstates,el_basis
+    y_points,z_points,nstates,el_basis,dia_to_ad
 
   real(kind=dp),allocatable :: BOpes(:,:,:,:)
   real(kind=dp),allocatable :: na_coup(:,:,:,:,:,:)
@@ -49,9 +53,10 @@ module variables
   integer :: ntraj=100
   integer :: nsteps=100
   integer :: dump=1
-  integer :: initial_BOstate=1
+  integer :: initial_BOstate=0
+  integer :: initial_DIAstate=1
   namelist /dynamics/ final_time,dt,dump,initial_BOstate, &
-    ntraj,r_init,k_init,sigma_init,mass_input
+    initial_DIAstate,ntraj,r_init,k_init,sigma_init,mass_input
 
   real(kind=dp),allocatable :: r0(:)
   real(kind=dp),allocatable :: k0(:)

@@ -12,7 +12,7 @@ module time_evolution
   real(kind=dp),allocatable :: Rcl(:,:),Vcl(:,:),classical_force(:)
   real(kind=dp),allocatable :: my_force(:,:,:),k_li(:,:,:)
   complex(kind=dp),allocatable :: BOsigma(:,:,:)
-  complex(kind=dp),allocatable :: BOcoeff(:,:)
+  complex(kind=dp),allocatable :: BOcoeff(:,:),DIAcoeff(:,:)
 
   contains
 
@@ -23,6 +23,7 @@ module time_evolution
     call input_summary
 
     call initialize_local_vars
+    if(dia_to_ad=="y") call diabatic_output(Rcl,BOcoeff,time=0)
     call plot(BOsigma,Rcl,Vcl,time=0)
 
     timeloop: do time=1,nsteps
@@ -49,7 +50,10 @@ module time_evolution
         end do
       end do
 
-      if(mod(time,dump)==0) call plot(BOsigma,Rcl,Vcl,time)
+      if(mod(time,dump)==0) then
+        if(dia_to_ad=="y") call diabatic_output(Rcl,BOcoeff,time)
+        call plot(BOsigma,Rcl,Vcl,time)
+      end if
 
       call quantum_momentum(Rcl,my_force,BOsigma,k_li,time)
 
@@ -77,18 +81,42 @@ module time_evolution
 
 
   subroutine initialize_local_vars
+    use electronic_problem
+    use read_diabatic_properties
 
-    integer :: itraj,i,j
+    integer :: itraj,i,j,istar(3)
 
     allocate(Rcl(ntraj,n_dof),Vcl(ntraj,n_dof), &
       classical_force(n_dof),BOsigma(ntraj,nstates,nstates), &
       BOcoeff(ntraj,nstates),my_force(ntraj,n_dof,nstates),  &
-      k_li(ntraj,nstates,nstates))
+      k_li(ntraj,nstates,nstates),DIAcoeff(ntraj,nstates))
 
     my_force=0.0_dp
 
-    BOcoeff=cmplx(0.0_dp,0.0_dp)
-    BOcoeff(:,initial_BOstate)=cmplx(1.0_dp,0.0_dp)
+    do itraj=1,ntraj
+      Rcl(itraj,:)=initial_positions(itraj,:)
+      Vcl(itraj,:)=initial_momenta(itraj,:)/mass
+    end do
+
+    if(initial_BOstate/=0) then
+      BOcoeff=cmplx(0.0_dp,0.0_dp)
+      BOcoeff(:,initial_BOstate)=cmplx(1.0_dp,0.0_dp)
+    end if
+    if(initial_DIAstate/=0) then
+      if(dia_to_ad=="y") then
+        DIAcoeff=cmplx(0.0_dp,0.0_dp)
+        DIAcoeff(:,initial_DIAstate)=cmplx(1.0_dp,0.0_dp)
+        call read_transformation_matrix_1d() ! I get the transformation matrix
+        !! from the adiabatic to the diabatic basis for different values of x,y,z
+        do itraj=1,ntraj
+          call locate_x(Rcl(itraj,:),istar)
+          BOcoeff(itraj,:)=matmul(transpose(transformation_matrix(:,:, &
+            istar(1),istar(2),istar(3))),DIAcoeff(itraj,:))
+        end do
+      else
+        write(6,*) "I need the transformation matrix from adiabatic to diabatic basis"
+      end if
+    end if
 
     do itraj=1,ntraj
       do i=1,nstates
@@ -96,8 +124,6 @@ module time_evolution
           BOsigma(itraj,i,j)=conjg(BOcoeff(itraj,i))*BOcoeff(itraj,j)
         end do
       end do
-      Rcl(itraj,:)=initial_positions(itraj,:)
-      Vcl(itraj,:)=initial_momenta(itraj,:)/mass
       call BOproblem(Rcl(itraj,:),itraj)
     end do
 
@@ -120,6 +146,8 @@ module time_evolution
     if(check/=0) print*,'error BOsigma'
     deallocate(BOcoeff,stat=check)
     if(check/=0) print*,'error BOcoeff'
+    deallocate(DIAcoeff,stat=check)
+    if(check/=0) print*,'error DIAcoeff'
 
     deallocate(my_force,stat=check)
     if(check/=0) print*,'error my_force'

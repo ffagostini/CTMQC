@@ -1,6 +1,6 @@
 FC = gfortran
 CFLAG =  -Wall -pedantic -std=f95 -O3 -fopenmp -Wmaybe-uninitialized
-#LFLAG = -llapack -lblas
+LFLAG = -llapack -lblas
 
 .SUFFIXES : .o .f90 .f
 .f90.o:
@@ -14,7 +14,7 @@ MAIN = main.o
 
 MODS = \
 linear_algebra.o \
-read_diabatic_potential.o \
+read_diabatic_properties.o \
 read_BOfiles.o \
 classical_evolution.o \
 coefficients_evolution.o \

@@ -8,8 +8,8 @@ coherence_corrections.o: variables.o
 coherence_corrections.o: kinds.o
 coherence_corrections.o: tools.o
 coherence_corrections.o: output.o
-read_diabatic_potential.o: variables.o
-read_diabatic_potential.o: kinds.o
+read_diabatic_properties.o: variables.o
+read_diabatic_properties.o: kinds.o
 electronic_problem.o: variables.o
 electronic_problem.o: kinds.o
 main.o: read_BOfiles.o
@@ -23,6 +23,7 @@ math.o: kinds.o
 output.o: variables.o
 output.o: kinds.o
 output.o: tools.o
+output.o: electronic_problem.o
 read_BOfiles.o: variables.o
 read_BOfiles.o: kinds.o
 time_evolution.o: variables.o
@@ -32,9 +33,10 @@ time_evolution.o: electronic_problem.o
 time_evolution.o: coefficients_evolution.o
 time_evolution.o: classical_evolution.o
 time_evolution.o: coherence_corrections.o
+time_evolution.o: read_diabatic_properties.o
 tools.o: variables.o
 tools.o: kinds.o
-tools.o: read_diabatic_potential.o
+tools.o: read_diabatic_properties.o
 tools.o: linear_algebra.o
 variables.o: kinds.o
 wigner_distribution.o: kinds.o

@@ -1,4 +1,4 @@
-module read_diabatic_potential
+module read_diabatic_properties
   use variables
   use kinds
   implicit none
@@ -95,4 +95,39 @@ module read_diabatic_potential
   end subroutine read_hamiltonian
 
 
-end module read_diabatic_potential
+  subroutine read_transformation_matrix_1d()
+
+    integer :: x,i,j,k,ioerr
+    character(len=100) :: basename,filename
+    real(kind=dp),allocatable :: tmp_vector(:)
+    real(kind=dp) :: tmp_scalar
+
+    allocate(tmp_vector(nstates*nstates))
+
+    path=trim(path_to_potentials)
+    basename="transformation_matrix"
+    filename=trim(path)//trim(basename)
+
+    open(401,file=filename,status='unknown',form='formatted',&
+      action='read',iostat=ioerr)
+    if(ioerr/=0) print*,'error reading ',filename
+
+    xloop: do x=1,x_points
+      read(401,*) tmp_vector,tmp_scalar
+      k=0
+      do i=1,nstates
+        do j=1,nstates
+          k=k+1
+          transformation_matrix(i,j,x,1,1)=tmp_vector(k) ! from adiabatic to diabatic basis
+        end do
+      end do
+    end do xloop
+
+    close(401)
+
+    deallocate(tmp_vector)
+
+  end subroutine read_transformation_matrix_1d
+
+
+end module read_diabatic_properties

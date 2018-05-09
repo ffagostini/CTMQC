@@ -205,7 +205,48 @@ module output
 
   end subroutine plot_density
 
-subroutine compute_energy(my_rho,e_BO,trajlabel)
+  subroutine diabatic_output(Rcl,BOcoeff,time)
+    use electronic_problem
+
+    real(kind=dp),intent(in) :: Rcl(ntraj,n_dof)
+    complex(kind=dp),intent(in) :: BOcoeff(ntraj,nstates)
+    integer,intent(in) :: time
+    integer :: check,i,itraj,istar(3)
+    real(kind=dp),allocatable :: DIA_pop(:)
+    complex(kind=dp),allocatable :: tmp_vector(:)
+
+    if(time==0) call initialize_diabatic_output
+
+    allocate(DIA_pop(nstates),stat=check)
+    if(check/=0) print*,'error allocation DIA_pop'
+    allocate(tmp_vector(nstates),stat=check)
+    if(check/=0) print*,'error allocation tmp_vector'
+
+    DIA_pop=0.0_dp
+
+    do itraj=1,ntraj
+      call locate_x(Rcl(itraj,:),istar)
+      tmp_vector=matmul(transformation_matrix(:,:, &
+        istar(1),istar(2),istar(3)),BOcoeff(itraj,:))
+      do i=1,nstates
+        DIA_pop(i)=DIA_pop(i)+real(conjg(tmp_vector(i))*tmp_vector(i))
+      end do
+    end do
+    DIA_pop=DIA_pop/dble(ntraj)
+
+    write(87,'(f14.4,100f14.8)') dble(time)*dt,DIA_pop
+
+    deallocate(DIA_pop,stat=check)
+    if(check/=0) print*,'error DIA_pop'
+    deallocate(tmp_vector,stat=check)
+    if(check/=0) print*,'error tmp_vector'
+
+    if(time==nsteps) call finalize_diabatic_output
+
+  end subroutine diabatic_output
+
+
+  subroutine compute_energy(my_rho,e_BO,trajlabel)
 
     integer,intent(in) :: trajlabel
     complex(kind=dp),intent(in) :: my_rho(nstates,nstates)
@@ -245,5 +286,25 @@ subroutine compute_energy(my_rho,e_BO,trajlabel)
     close(88)
 
   end subroutine finalize_output
+
+
+  subroutine initialize_diabatic_output
+
+    integer :: ios
+
+    open(87,file="./output/DIA_population.dat",status="replace", &
+      form="formatted",action="write",iostat=ios)
+    if(ios/=0) print*,'error opening DIA_population.dat'
+    write(87,*) "#Time, Diabatic population"
+
+  end subroutine initialize_diabatic_output
+
+
+  subroutine finalize_diabatic_output
+
+    close(87)
+
+  end subroutine finalize_diabatic_output
+
 
 end module output
