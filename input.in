@@ -19,6 +19,8 @@
   K_INIT = 25.0
   SIGMA_INIT = 0.0      ! if sigma = 0.0, then sigma = 20/k0 in the code
   MASS_INPUT = 1.0
+  VISCOSITY = 0.0
+  TEMPERATURE = 0.0
 /
 &EXTERNAL_FILES
   PATH_TO_POTENTIALS = "./electron_transfer/"

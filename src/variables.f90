@@ -14,7 +14,7 @@ module variables
   complex(kind=dp) :: Im_unit !< Imaginary unit
   real(kind=dp) :: PI
 
-  character(len=100) :: model_potential="unknown"
+  character(len=100) :: model_system="unknown"
   !< The value is set to "unknown" by default but it can be set to tully_1, 
   !! tully_2, or tully_3 in the input file.
   !! It does not affect the calculations, but it appears in the output as summary of 
@@ -34,7 +34,7 @@ module variables
   real(kind=dp),allocatable :: transformation_matrix(:,:,:,:,:)!< Transformation matrix from
   !! diabatic to adiabatic basis.
   integer :: npairs=1 !< The number of pairs of electronic states, without double counting.
-  namelist /system/ model_potential,n_dof,x_points, &
+  namelist /system/ model_system,n_dof,x_points, &
     y_points,z_points,nstates,el_basis,dia_to_ad
 
   real(kind=dp),allocatable :: BOpes(:,:,:,:)
@@ -56,7 +56,8 @@ module variables
   integer :: initial_BOstate=0
   integer :: initial_DIAstate=1
   namelist /dynamics/ final_time,dt,dump,initial_BOstate, &
-    initial_DIAstate,ntraj,r_init,k_init,sigma_init,mass_input
+    initial_DIAstate,ntraj,r_init,k_init,sigma_init,mass_input, &
+    viscosity,temperature
 
   real(kind=dp),allocatable :: r0(:)
   real(kind=dp),allocatable :: k0(:)

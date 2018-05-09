@@ -43,12 +43,12 @@ module classical_evolution
   end function VV_velocity
 
 
-  subroutine non_adiabatic_force(coeff,force,acc_force,k_li,trajlabel)
+  subroutine non_adiabatic_force(coeff,force,acc_force,k_li,trajlabel,velocity)
 
     integer,intent(in) :: trajlabel
     complex(kind=dp),intent(in) :: coeff(nstates)
     real(kind=dp),intent(in) :: acc_force(n_dof,nstates),&
-      k_li(nstates,nstates)
+      k_li(nstates,nstates),velocity(n_dof)
     real(kind=dp),intent(out) :: force(n_dof)
     integer :: i,j,i_dof,check
     complex(kind=dp),allocatable :: my_rho(:,:)
@@ -91,6 +91,13 @@ module classical_evolution
         end do
       end do
     end do
+
+    !Random and viscous force
+    if(model_system=="markus") then
+      do i_dof=1,n_dof
+        force(i_dof)=force(i_dof)-viscosity*mass(i_dof)*velocity(i_dof)
+      end do
+    end if
 
     deallocate(my_rho,stat=check)
     if(check/=0) print*,'error 2 my_rho in non_adiabatic_force'
