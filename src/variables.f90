@@ -5,6 +5,7 @@ module variables
   !>@param hbar
   !!@param Im_unit
 
+  real(kind=dp),parameter :: kB=0.0000031577464_dp
   real(kind=dp),parameter :: hbar=1.0_dp !< Atomic units are used throughout the program
   real(kind=dp),parameter :: zero=0.0000000010_dp
   real(kind=dp),parameter :: M_parameter=6.0_dp !<

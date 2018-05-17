@@ -1,6 +1,7 @@
 module classical_evolution
   use variables
   use kinds
+  use wigner_distribution
   implicit none
 
   real(kind=dp) :: mydgaugeterm
@@ -50,8 +51,10 @@ module classical_evolution
     real(kind=dp),intent(in) :: acc_force(n_dof,nstates),&
       k_li(nstates,nstates),velocity(n_dof)
     real(kind=dp),intent(out) :: force(n_dof)
-    integer :: i,j,i_dof,check
+    integer :: i,j,i_dof,check,nrand
     complex(kind=dp),allocatable :: my_rho(:,:)
+    real(kind=dp) :: noise,tmp_vector(2),variance
+    real(kind=dp),allocatable :: xi(:)
 
     allocate(my_rho(nstates,nstates),stat=check)
     if(check/=0) print*,'error 1 my_rho in non_adiabatic_force'
@@ -94,9 +97,18 @@ module classical_evolution
 
     !Random and viscous force
     if(model_system=="markus") then
+    nrand=2
+    allocate(xi(nrand),stat=check)
+    if(check/=0) print*,'error xi'
+    call random_number(xi)
       do i_dof=1,n_dof
-        force(i_dof)=force(i_dof)-viscosity*mass(i_dof)*velocity(i_dof)
+        variance=sqrt(2.0_dp*viscosity*mass(i_dof)*kB*temperature/dt)
+        tmp_vector=gaussian_distribution(xi,nrand,variance,0.0_dp)
+        noise=tmp_vector(1)
+        force(i_dof)=force(i_dof)- &
+          viscosity*mass(i_dof)*velocity(i_dof)+noise
       end do
+      deallocate(xi)
     end if
 
     deallocate(my_rho,stat=check)

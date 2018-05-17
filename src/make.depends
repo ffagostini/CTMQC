@@ -2,6 +2,7 @@
 
 classical_evolution.o: variables.o
 classical_evolution.o: kinds.o
+classical_evolution.o: wigner_distribution.o
 coefficients_evolution.o: variables.o
 coefficients_evolution.o: kinds.o
 coherence_corrections.o: variables.o
