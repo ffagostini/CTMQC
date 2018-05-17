@@ -70,7 +70,7 @@ module coherence_corrections
       g_i(:),prod_g_i(:,:),w_ij(:,:,:),slope_i(:,:),ratio(:,:,:), &
       num_old(:,:,:),num_new(:,:,:),num(:,:,:),denom(:,:),qmom(:,:,:)
     integer,allocatable :: ntr_j(:)
-    real(kind=dp) :: dist2,dist_cutoff,threshold
+    real(kind=dp) :: dist2,dist_cutoff,threshold,a
 
     allocate(avR(n_dof),avR2(n_dof),gamma(n_dof,ntraj),ntr_j(n_dof), &
       g_i(ntraj),prod_g_i(ntraj,ntraj),w_ij(n_dof,ntraj,ntraj), &
@@ -112,7 +112,8 @@ module coherence_corrections
         end do jtrajloop
         avR(i_dof)=avR(i_dof)/dble(ntr_j(i_dof))
         avR2(i_dof)=avR2(i_dof)/dble(ntr_j(i_dof))
-        gamma(i_dof,itraj)=sqrt((avR2(i_dof)-avR(i_dof)**2))/dble(ntr_j(i_dof))
+        gamma(i_dof,itraj)=sqrt((avR2(i_dof)-avR(i_dof)**2)/dble(ntr_j(i_dof)))
+        !if(gamma(i_dof,itraj)<0.00000001_dp) print*,'ciao'
         !write(*,*) gamma(i_dof,itraj)
         if((gamma(i_dof,itraj))**2 .lt. threshold .or. ntr_j(i_dof)==1) &
           gamma(i_dof,itraj)=sqrt(threshold)!dist_cutoff!
@@ -122,6 +123,7 @@ module coherence_corrections
       end do i_dofloop
     end do itrajloop
 
+    !gamma=1._dp
     store_gamma=gamma
 
     do itraj=1,ntraj
@@ -306,9 +308,10 @@ module coherence_corrections
           k_li(itraj,istate,jstate)=0.0_dp
           k_li(itraj,jstate,istate)=0.0_dp
           do i_dof=1,n_dof
-            k_li(itraj,istate,jstate)=k_li(itraj,istate,jstate)+2.0_dp/mass(i_dof)*  &
+            !write(6,*) i_dof,itraj,index_ij,istate,jstate
+            k_li(itraj,istate,jstate)=k_li(itraj,istate,jstate)+(2.0_dp/mass(i_dof))*  &
               qmom(i_dof,itraj,index_ij)*acc_force(itraj,i_dof,istate)
-            k_li(itraj,jstate,istate)=k_li(itraj,jstate,istate)+2.0_dp/mass(i_dof)*  &
+            k_li(itraj,jstate,istate)=k_li(itraj,jstate,istate)+(2.0_dp/mass(i_dof))*  &
               qmom(i_dof,itraj,index_ij)*acc_force(itraj,i_dof,jstate)
           end do
         end do
@@ -316,7 +319,7 @@ module coherence_corrections
     end do
 
     deallocate(avR,avR2,gamma,ntr_j,g_i,prod_g_i,w_ij,slope_i, &
-      ratio,num_old,num_new,num,denom)
+      ratio,num_old,num_new,num,denom,qmom)
 
   end subroutine quantum_momentum
 

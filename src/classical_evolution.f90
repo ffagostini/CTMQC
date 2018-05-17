@@ -97,13 +97,13 @@ module classical_evolution
 
     !Random and viscous force
     if(model_system=="marcus") then
-    nrand=2
-    allocate(xi(nrand),stat=check)
-    if(check/=0) print*,'error xi'
-    call random_number(xi)
+      nrand=2
+      allocate(xi(nrand),stat=check)
+      if(check/=0) print*,'error xi'
+      call random_number(xi)
       do i_dof=1,n_dof
         variance=sqrt(2.0_dp*viscosity*mass(i_dof)*kB*temperature/dt)
-        tmp_vector=gaussian_distribution(xi,nrand,variance,0.0_dp)
+        tmp_vector=gaussian_distribution(xi,nrand,variance,0.0_dp,nrand)
         noise=tmp_vector(1)
         force(i_dof)=force(i_dof)- &
           viscosity*mass(i_dof)*velocity(i_dof)+noise

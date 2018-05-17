@@ -113,6 +113,7 @@ module time_evolution
           BOcoeff(itraj,:)=matmul(transpose(transformation_matrix(:,:, &
             istar(1),istar(2),istar(3))),DIAcoeff(itraj,:))
         end do
+        call compute_diabatic_surfaces
       else
         write(6,*) "I need the transformation matrix from adiabatic to diabatic basis"
       end if

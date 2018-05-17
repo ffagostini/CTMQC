@@ -130,4 +130,32 @@ module read_diabatic_properties
   end subroutine read_transformation_matrix_1d
 
 
+  subroutine compute_diabatic_surfaces
+
+    integer :: x,i
+    real(kind=dp),allocatable :: tmp_matrix(:,:),diag_H(:,:),DIApes(:,:,:)
+
+    if(n_dof==1) then
+      allocate(tmp_matrix(nstates,nstates), &
+        diag_H(nstates,nstates),DIApes(x_points,nstates,nstates))
+      do x=1,x_points
+        diag_H=0._dp
+        do i=1,nstates
+          diag_H(i,i)=BOpes(x,1,1,i)
+        end do
+        tmp_matrix=matmul(transformation_matrix(:,:,x,1,1),diag_H)
+        DIApes(x,:,:)=matmul(tmp_matrix, &
+          transpose(transformation_matrix(:,:,x,1,1)))
+      end do
+      open(701,file='./output/diabatic_surfaces.dat')
+      do x=1,x_points
+        write(701,*) DIApes(x,:,:),x_grid(x)
+      end do
+      close(701)
+      deallocate(tmp_matrix,diag_H,DIApes)
+    end if
+
+  end subroutine compute_diabatic_surfaces
+
+
 end module read_diabatic_properties

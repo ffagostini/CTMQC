@@ -20,7 +20,7 @@ module wigner_distribution
       do i=1,n_dof
         call random_number(xi)
         initial_positions(:,i)= &
-          gaussian_distribution(xi,nrand,sigma(i)/sqrt(2.0_dp),r0(i))
+          gaussian_distribution(xi,nrand,sigma(i)/sqrt(2.0_dp),r0(i),ntraj)
       end do
       deallocate(xi)
     else
@@ -41,7 +41,7 @@ module wigner_distribution
       do i=1,n_dof
         call random_number(xi)
         initial_momenta(:,i)= &
-          gaussian_distribution(xi,nrand,hbar/sigma(i)/sqrt(2.0_dp),k0(i))
+          gaussian_distribution(xi,nrand,hbar/sigma(i)/sqrt(2.0_dp),k0(i),ntraj)
       end do
       deallocate(xi)
     else
@@ -50,6 +50,7 @@ module wigner_distribution
       if(ios/=0) print*,'error opening file of momenta'
       do i=1,ntraj
         read(26,*) initial_momenta(i,:)
+        initial_momenta(i,:)=initial_momenta(i,:)*mass
       end do
       close(26)
     end if
@@ -64,11 +65,11 @@ module wigner_distribution
   end subroutine initial_conditions
   
 
-  function gaussian_distribution(xi,nrand,var,x0) result(y)
+  function gaussian_distribution(xi,nrand,var,x0,my_nrand) result(y)
 
-    integer,intent(in) :: nrand
+    integer,intent(in) :: nrand,my_nrand
     real(kind=dp),intent(in) :: xi(nrand),var,x0
-    real(kind=dp) :: y_tmp(nrand),y(ntraj)
+    real(kind=dp) :: y_tmp(nrand),y(my_nrand)
     integer :: i
 
     do i=1,nrand,2
@@ -78,8 +79,8 @@ module wigner_distribution
 
     y_tmp=y_tmp*var+x0
 
-    if (nrand/=ntraj) then
-      do i=1,ntraj
+    if (nrand/=my_nrand) then
+      do i=1,my_nrand
         y(i)=y_tmp(i)
       end do
     else
