@@ -96,7 +96,7 @@ module classical_evolution
     end do
 
     !Random and viscous force
-    if(model_system=="markus") then
+    if(model_system=="marcus") then
     nrand=2
     allocate(xi(nrand),stat=check)
     if(check/=0) print*,'error xi'
