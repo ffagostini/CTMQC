@@ -46,15 +46,15 @@ module variables
   real(kind=dp),allocatable :: Hel(:,:,:,:,:)
 
   character(len=100) :: algorithm='CTMQC'
-  real(kind=dp) :: dt=0.1d0
-  real(kind=dp) :: final_time=0.0d0
+  real(kind=dp) :: dt=0.1_dp
+  real(kind=edp) :: final_time=0._edp
   real(kind=dp) :: r_init(100)
   real(kind=dp) :: k_init(100)
   real(kind=dp) :: mass_input(100)
   real(kind=dp) :: sigma_init(100)
   integer :: ntraj=100
   integer :: nsteps=100
-  integer :: dump=1
+  integer(kind=di) :: dump=1
   integer :: initial_BOstate=0
   integer :: initial_DIAstate=1
   real(kind=dp) :: viscosity

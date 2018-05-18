@@ -18,7 +18,8 @@ module time_evolution
 
   subroutine evolution
 
-    integer :: time,itraj,i,j
+    integer(kind=4) :: time
+    integer :: itraj,i,j
 
     call input_summary
 
@@ -28,7 +29,7 @@ module time_evolution
 
     timeloop: do time=1,nsteps
 
-      if(mod(time-1,dump)==0) write(*,'(a,1x,f14.2)') 'time=',dble(time-1)*dt
+      if(mod(time,dump)==0) write(*,'(a,1x,f14.2)') 'time=',dble(time-1)*dt
 
       !!!!$omp parallel do private(itraj,classical_force) &
       !!!!$omp shared(Rcl,Vcl,ntraj) &
@@ -74,11 +75,11 @@ module time_evolution
     write(6,"(a,i5,1x,a)") "Running",ntraj,"trajectories"
     write(6,"(a,f14.4,1x,a)") "centered at",r0,"a.u."
     write(6,"(a,f14.4,1x,a)") "with initial momentum",k0,"a.u."
-    write(6,"(a,f14.4,1x,a)") "variance",sigma,"a.u."
-    write(6,"(a,f14.2,1x,a)") "for",final_time,"a.u."
+    write(6,"(a,f14.4,1x,a)") "variance",sqrt(sigma),"a.u."
+    write(6,"(a,es11.3,1x,a)") "for",final_time,"a.u."
     write(6,"(a,f14.4,1x,a)") "with time-step",dt,"a.u."
-    write(6,"(a,1x,i5,1x,a)") "dumping every",dump,"steps"
-    write(6,"(a,1x,i5)") "Total number of printed snapshots", &
+    write(6,"(a,1x,i8,1x,a)") "dumping every",dump,"steps"
+    write(6,"(a,1x,i7)") "Total number of printed snapshots", &
       int((final_time/dt)/dble(dump))
 
     write(6,"(a,1x,a,1x,a)") "Starting",trim(algorithm),"dynamics..."

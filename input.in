@@ -1,7 +1,7 @@
 &SYSTEM
   MODEL_SYSTEM = 'marcus'
   N_DOF = 1           ! Tully’s models are 1D
-  X_POINTS = 40494     ! check with wc -l *_bopes.dat
+  X_POINTS = 24987     ! check with wc -l *_bopes.dat
   Y_POINTS = 1        
   Z_POINTS = 1
   NSTATES = 2
@@ -9,10 +9,10 @@
   DIA_TO_AD = 'y'
 /
 &DYNAMICS
-  ALGORITHM = 'CTMQC'
-  FINAL_TIME = 0.0
-  DT = 0.5
-  DUMP = 500
+  ALGORITHM = 'Ehrenfest'
+  FINAL_TIME = 1.0E10
+  DT = 10.0
+  DUMP = 5000000
   INITIAL_BOSTATE = 0
   INITIAL_DIASTATE = 1
   NTRAJ = 100

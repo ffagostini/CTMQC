@@ -63,6 +63,7 @@ program main
     if(ioerr/=0) print*,'error reading dynamics variables'
 
     nsteps=anint(final_time/dt)
+
     do i_dof=1,n_dof
       r0(i_dof)=r_init(i_dof)
       k0(i_dof)=k_init(i_dof)
