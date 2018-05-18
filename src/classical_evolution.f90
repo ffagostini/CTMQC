@@ -112,7 +112,8 @@ module classical_evolution
         tmp_vector=gaussian_distribution(xi,nrand,variance,0.0_dp,nrand)
         noise=tmp_vector(1)
         force(i_dof)=force(i_dof)- &
-          viscosity*mass(i_dof)*velocity(i_dof)+vv_param(i_dof,3)*noise
+          !viscosity*mass(i_dof)*velocity(i_dof)+
+          vv_param(i_dof,3)*noise
       end do
       deallocate(xi)
     end if

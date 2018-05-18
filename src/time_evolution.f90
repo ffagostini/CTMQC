@@ -28,7 +28,7 @@ module time_evolution
     if(dia_to_ad=="y") call diabatic_output(Rcl,BOcoeff,time=0)
     call plot(BOsigma,Rcl,Vcl,time=0)
 
-    !if(model_system=="marcus") call integrator_parameters
+    if(model_system=="marcus") call integrator_parameters
 
     timeloop: do time=1,nsteps
 
