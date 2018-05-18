@@ -41,6 +41,8 @@ module tools
 
     allocate(r0(n_dof),stat=check)
     if(check/=0) print*,'error allocatin r0'
+    allocate(r02(n_dof),stat=check)
+    if(check/=0) print*,'error allocatin r02'
     allocate(k0(n_dof),stat=check)
     if(check/=0) print*,'error allocation k0'
     allocate(mass(n_dof),stat=check)
@@ -130,6 +132,8 @@ module tools
 
     deallocate(r0,stat=check)
     if(check/=0) print*,'error r0'
+    deallocate(r02,stat=check)
+    if(check/=0) print*,'error r02'
     deallocate(k0,stat=check)
     if(check/=0) print*,'error k0'
     deallocate(mass,stat=check)

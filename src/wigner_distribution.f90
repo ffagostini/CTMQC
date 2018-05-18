@@ -62,6 +62,21 @@ module wigner_distribution
     end do
     close(23)
 
+    do j=1,n_dof
+      r0(j)=0.0_dp
+      r02(j)=0.0_dp
+      k0(j)=0.0_dp
+      do i=1,ntraj
+        r0(j)=r0(j)+initial_positions(i,j)
+        r02(j)=r02(j)+(initial_positions(i,j))**2
+        k0(j)=k0(j)+initial_momenta(i,j)
+      end do
+      r0(j)=r0(j)/dble(ntraj)
+      r02(j)=r02(j)/dble(ntraj)
+      sigma(j)=(r02(j)-(r0(j)**2))
+      k0(j)=k0(j)/dble(ntraj)
+    end do
+
   end subroutine initial_conditions
   
 

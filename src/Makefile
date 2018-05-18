@@ -29,6 +29,7 @@ wigner_distribution.o
 
 all:  main.x
 
+
 main.x: $(MAIN) $(MODS) $(SUBS)
 	$(FC) $(CFLAG) -o $@ $(MAIN) $(MODS) $(SUBS) \
 	$(JDLIB) $(WSMPLIB) $(LFLAG)

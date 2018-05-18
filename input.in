@@ -1,7 +1,7 @@
 &SYSTEM
-  MODEL_SYSTEM = 'not_marcus'
+  MODEL_SYSTEM = 'marcus'
   N_DOF = 1           ! Tully’s models are 1D
-  X_POINTS = 12494     ! check with wc -l *_bopes.dat
+  X_POINTS = 40494     ! check with wc -l *_bopes.dat
   Y_POINTS = 1        
   Z_POINTS = 1
   NSTATES = 2
@@ -9,9 +9,10 @@
   DIA_TO_AD = 'y'
 /
 &DYNAMICS
-  FINAL_TIME = 10000.0
-  DT = 0.1
-  DUMP = 1000
+  ALGORITHM = 'CTMQC'
+  FINAL_TIME = 0.0
+  DT = 0.5
+  DUMP = 500
   INITIAL_BOSTATE = 0
   INITIAL_DIASTATE = 1
   NTRAJ = 100
@@ -20,7 +21,7 @@
   SIGMA_INIT = 0.0      ! if sigma = 0.0, then sigma = 20/k0 in the code
   MASS_INPUT = 1.0
   VISCOSITY = 1.875e-05
-  TEMPERATURE = 0.00095
+  TEMPERATURE = 300.0
 /
 &EXTERNAL_FILES
   PATH_TO_POTENTIALS = "./spin-boson-ctmqc/run-ctmqc-0/spin_boson_surfaces_nacv/"

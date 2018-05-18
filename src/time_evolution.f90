@@ -36,7 +36,8 @@ module time_evolution
       !!!!$omp default(none)
       trajsloop: do itraj=1,ntraj
         call BOproblem(Rcl(itraj,:),itraj)
-        call accumulated_BOforce(BOcoeff(itraj,:),my_force(itraj,:,:),itraj)
+        if(algorithm=="CTQMC" .or. algorithm=="CTeMQC") &
+          call accumulated_BOforce(BOcoeff(itraj,:),my_force(itraj,:,:),itraj)
         call non_adiabatic_force(BOcoeff(itraj,:),classical_force, &
           my_force(itraj,:,:),k_li(itraj,:,:),itraj,Vcl(itraj,:))
         call RK4_coeff(Vcl(itraj,:),BOcoeff(itraj,:),k_li(itraj,:,:),itraj)
@@ -55,7 +56,8 @@ module time_evolution
         call plot(BOsigma,Rcl,Vcl,time)
       end if
 
-      call quantum_momentum(Rcl,my_force,BOsigma,k_li,time)
+      if(algorithm=="CTQMC" .or. algorithm=="CTeMQC") &
+        call quantum_momentum(Rcl,my_force,BOsigma,k_li,time)
 
     end do timeloop
 
@@ -66,16 +68,20 @@ module time_evolution
 
   subroutine input_summary
 
-    write(6,"(a,1x,a)") "Model system ",trim(model_system)
-    write(6,"(a,i5)") "Initial BO state",initial_BOstate
+    write(6,"(a,1x,a)") "Model system:",trim(model_system)
+    if(initial_BOstate/=0) write(6,"(a,i5)") "Initial BO state",initial_BOstate
+    if(initial_DIAstate/=0) write(6,"(a,i5)") "Initial DIA state",initial_DIAstate
     write(6,"(a,i5,1x,a)") "Running",ntraj,"trajectories"
-    write(6,"(a,f14.2,1x,a)") "centered at",r0,"a.u."
-    write(6,"(a,f14.2,1x,a)") "with initial momentum",k0,"a.u."
+    write(6,"(a,f14.4,1x,a)") "centered at",r0,"a.u."
+    write(6,"(a,f14.4,1x,a)") "with initial momentum",k0,"a.u."
+    write(6,"(a,f14.4,1x,a)") "variance",sigma,"a.u."
     write(6,"(a,f14.2,1x,a)") "for",final_time,"a.u."
     write(6,"(a,f14.4,1x,a)") "with time-step",dt,"a.u."
-    write(6,"(a,i5,1x,a)") "dumping every",dump,"steps"
+    write(6,"(a,1x,i5,1x,a)") "dumping every",dump,"steps"
+    write(6,"(a,1x,i5)") "Total number of printed snapshots", &
+      int((final_time/dt)/dble(dump))
 
-    write(6,"(a)") "Starting dynamics..."
+    write(6,"(a,1x,a,1x,a)") "Starting",trim(algorithm),"dynamics..."
 
   end subroutine input_summary
 

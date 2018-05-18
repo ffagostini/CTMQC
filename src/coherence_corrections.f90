@@ -81,7 +81,7 @@ module coherence_corrections
 
     if(time==1) then
       dist_cutoff=M_parameter*minval(sigma)/dble(ntraj)
-      store_gamma=dist_cutoff
+      store_gamma=sqrt(minval(sigma)/dble(ntraj))!dist_cutoff
     end if
 
     threshold=M_parameter*minval(sigma)/dble(ntraj)
@@ -112,14 +112,20 @@ module coherence_corrections
         end do jtrajloop
         avR(i_dof)=avR(i_dof)/dble(ntr_j(i_dof))
         avR2(i_dof)=avR2(i_dof)/dble(ntr_j(i_dof))
-        gamma(i_dof,itraj)=sqrt((avR2(i_dof)-avR(i_dof)**2)/dble(ntr_j(i_dof)))
-        !if(gamma(i_dof,itraj)<0.00000001_dp) print*,'ciao'
+        gamma(i_dof,itraj)=sqrt((avR2(i_dof)-avR(i_dof)**2))/dble(ntr_j(i_dof))
         !write(*,*) gamma(i_dof,itraj)
-        if((gamma(i_dof,itraj))**2 .lt. threshold .or. ntr_j(i_dof)==1) &
+        if((gamma(i_dof,itraj))**2 .lt. threshold .or. ntr_j(i_dof)==1) then
+          !if(gamma(i_dof,itraj)<0.00000001_dp) print*,'ciao'
           gamma(i_dof,itraj)=sqrt(threshold)!dist_cutoff!
+          !if(gamma(i_dof,itraj)<0.00000001_dp) then
+          !  print*,'ciao'
+          !else
+          !  write(6,*) gamma(i_dof,itraj),ntr_j(i_dof)
+          !end if
           !Variance associated to each trajectory depending on the spreading
           !of the trajectories close to the trajectory (itraj)
           !if the variance is too small, I set it to a given value dist_cutoff
+        end if
       end do i_dofloop
     end do itrajloop
 

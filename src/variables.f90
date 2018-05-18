@@ -45,6 +45,7 @@ module variables
   real(kind=dp),allocatable :: z_grid(:)
   real(kind=dp),allocatable :: Hel(:,:,:,:,:)
 
+  character(len=100) :: algorithm='CTMQC'
   real(kind=dp) :: dt=0.1d0
   real(kind=dp) :: final_time=0.0d0
   real(kind=dp) :: r_init(100)
@@ -58,11 +59,12 @@ module variables
   integer :: initial_DIAstate=1
   real(kind=dp) :: viscosity
   real(kind=dp) :: temperature
-  namelist /dynamics/ final_time,dt,dump,initial_BOstate, &
+  namelist /dynamics/ algorithm,final_time,dt,dump,initial_BOstate, &
     initial_DIAstate,ntraj,r_init,k_init,sigma_init,mass_input, &
     viscosity,temperature
 
   real(kind=dp),allocatable :: r0(:)
+  real(kind=dp),allocatable :: r02(:)
   real(kind=dp),allocatable :: k0(:)
   real(kind=dp),allocatable :: mass(:)
   real(kind=dp),allocatable :: sigma(:)
