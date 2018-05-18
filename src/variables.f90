@@ -79,6 +79,7 @@ module variables
   real(kind=dp),allocatable :: store_gamma(:,:)
   real(kind=dp),allocatable :: tdpes(:)
   real(kind=dp),allocatable :: density(:)
+  real(kind=dp),allocatable :: vv_param(:,:)
 
   character(len=100) :: path_to_potentials="./tests/"
   character(len=100) :: positions_file=""

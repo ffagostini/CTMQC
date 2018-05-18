@@ -35,6 +35,7 @@ time_evolution.o: coefficients_evolution.o
 time_evolution.o: classical_evolution.o
 time_evolution.o: coherence_corrections.o
 time_evolution.o: read_diabatic_properties.o
+time_evolution.o: tools.o
 tools.o: variables.o
 tools.o: kinds.o
 tools.o: read_diabatic_properties.o

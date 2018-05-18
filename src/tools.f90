@@ -49,6 +49,8 @@ module tools
     if(check/=0) print*,'error allocation mass'
     allocate(sigma(n_dof),stat=check)
     if(check/=0) print*,'error allocation sigma'
+    allocate(vv_param(n_dof,3),stat=check)
+    if(check/=0) print*,'error allocation vv_param'
 
   end subroutine initialize_dynamics_vars
 
@@ -138,6 +140,9 @@ module tools
     if(check/=0) print*,'error k0'
     deallocate(mass,stat=check)
     if(check/=0) print*,'error mass'
+    deallocate(vv_param,stat=check)
+    if(check/=0) print*,'error allocation vv_param'
+    vv_param=1.0_dp
 
   end subroutine finalize
 
@@ -163,6 +168,20 @@ module tools
 
   end subroutine generate_random_seed
 
+
+  subroutine integrator_parameters
+
+    integer :: i_dof
+
+    do i_dof=1,n_dof
+      vv_param(i_dof,1)=exp(-viscosity*dt/mass(i_dof))
+      vv_param(i_dof,2)=(mass(i_dof)/viscosity)* &
+        (1._dp-vv_param(i_dof,1))
+      vv_param(i_dof,3)=sqrt(mass(i_dof)*kB*temperature)* &
+        sqrt(1._dp-(vv_param(i_dof,1))**2)
+    end do
+
+  end subroutine integrator_parameters
 
   subroutine change_basis
 

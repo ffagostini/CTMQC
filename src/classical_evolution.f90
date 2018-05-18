@@ -39,7 +39,11 @@ module classical_evolution
     real(kind=dp),intent(in) :: v(n_dof),force(n_dof)
     real(kind=dp) :: my_v(n_dof)
 
-    my_v=v+0.50_dp*dt*force/mass
+    if(model_system=="marcus") then
+      my_v=vv_param(:,1)*v+0.50_dp*dt*force/mass
+    else
+      my_v=v+0.50_dp*dt*force/mass
+    end if
 
   end function VV_velocity
 
@@ -77,7 +81,6 @@ module classical_evolution
         do j=i+1,nstates
           force(i_dof)=force(i_dof)- &
             2.0_dp*real(my_rho(i,j),kind=dp)* &
-            !(BOenergy(trajlabel,i)-BOenergy(trajlabel,j))* &
             (BOenergy(trajlabel,j)-BOenergy(trajlabel,i))* &
             coup(trajlabel,i_dof,i,j)
         end do
@@ -99,16 +102,17 @@ module classical_evolution
 
     !Random and viscous force
     if(model_system=="marcus") then
+      force=force*vv_param(:,2)
       nrand=2
       allocate(xi(nrand),stat=check)
       if(check/=0) print*,'error xi'
       call random_number(xi)
       do i_dof=1,n_dof
-        variance=sqrt(2.0_dp*viscosity*mass(i_dof)*kB*temperature/dt)
+        variance=1.0_dp!sqrt(2.0_dp*viscosity*mass(i_dof)*kB*temperature/dt)
         tmp_vector=gaussian_distribution(xi,nrand,variance,0.0_dp,nrand)
         noise=tmp_vector(1)
         force(i_dof)=force(i_dof)- &
-          viscosity*mass(i_dof)*velocity(i_dof)+noise
+          viscosity*mass(i_dof)*velocity(i_dof)+vv_param(i_dof,3)*noise
       end do
       deallocate(xi)
     end if

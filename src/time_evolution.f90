@@ -7,6 +7,7 @@ module time_evolution
   use classical_evolution
   use coherence_corrections
   use output
+  use tools
   implicit none
 
   real(kind=dp),allocatable :: Rcl(:,:),Vcl(:,:),classical_force(:)
@@ -27,9 +28,11 @@ module time_evolution
     if(dia_to_ad=="y") call diabatic_output(Rcl,BOcoeff,time=0)
     call plot(BOsigma,Rcl,Vcl,time=0)
 
+    !if(model_system=="marcus") call integrator_parameters
+
     timeloop: do time=1,nsteps
 
-      if(mod(time,dump)==0) write(*,'(a,1x,f14.2)') 'time=',dble(time-1)*dt
+      if(mod(time,dump)==0) write(*,'(a,1x,f14.2)') 'time=',dble(time)*dt
 
       !!!!$omp parallel do private(itraj,classical_force) &
       !!!!$omp shared(Rcl,Vcl,ntraj) &
@@ -57,7 +60,7 @@ module time_evolution
         call plot(BOsigma,Rcl,Vcl,time)
       end if
 
-      if(algorithm=="CTQMC" .or. algorithm=="CTeMQC") &
+      if(trim(algorithm)=="CTMQC" .or. trim(algorithm)=="CTeMQC") &
         call quantum_momentum(Rcl,my_force,BOsigma,k_li,time)
 
     end do timeloop
