@@ -32,7 +32,7 @@ module time_evolution
 
     timeloop: do time=1,nsteps
 
-      if(mod(time,dump)==0) write(*,'(a,1x,f14.2)') 'time=',dble(time)*dt
+      if(mod(time,dump)==0) write(*,'(a,1x,f14.2)') '#time=',dble(time)*dt
 
       !!!!$omp parallel do private(itraj,classical_force) &
       !!!!$omp shared(Rcl,Vcl,ntraj) &
@@ -72,20 +72,22 @@ module time_evolution
 
   subroutine input_summary
 
-    write(6,"(a,1x,a)") "Model system:",trim(model_system)
-    if(initial_BOstate/=0) write(6,"(a,i5)") "Initial BO state",initial_BOstate
-    if(initial_DIAstate/=0) write(6,"(a,i5)") "Initial DIA state",initial_DIAstate
-    write(6,"(a,i5,1x,a)") "Running",ntraj,"trajectories"
-    write(6,"(a,f14.4,1x,a)") "centered at",r0,"a.u."
-    write(6,"(a,f14.4,1x,a)") "with initial momentum",k0,"a.u."
-    write(6,"(a,f14.4,1x,a)") "variance",sqrt(sigma),"a.u."
-    write(6,"(a,es11.3,1x,a)") "for",final_time,"a.u."
-    write(6,"(a,f14.4,1x,a)") "with time-step",dt,"a.u."
-    write(6,"(a,1x,i8,1x,a)") "dumping every",dump,"steps"
-    write(6,"(a,1x,i7)") "Total number of printed snapshots", &
+    write(6,"(a,1x,a)") "#Model system:",trim(model_system)
+    if(initial_BOstate/=0) write(6,"(a,i5)") &
+      "#Initial BO state",initial_BOstate
+    if(initial_DIAstate/=0) write(6,"(a,i5)") &
+      "#Initial DIA state",initial_DIAstate
+    write(6,"(a,i5,1x,a)") "#Running",ntraj,"trajectories"
+    write(6,"(a,f14.4,1x,a)") "#centered at",r0,"a.u."
+    write(6,"(a,f14.4,1x,a)") "#with initial momentum",k0,"a.u."
+    write(6,"(a,f14.4,1x,a)") "#variance",sqrt(sigma),"a.u."
+    write(6,"(a,es11.3,1x,a)") "#for",final_time,"a.u."
+    write(6,"(a,f14.4,1x,a)") "#with time-step",dt,"a.u."
+    write(6,"(a,1x,i8,1x,a)") "#dumping every",dump,"steps"
+    write(6,"(a,1x,i7)") "#Total number of printed snapshots", &
       int((final_time/dt)/dble(dump))
 
-    write(6,"(a,1x,a,1x,a)") "Starting",trim(algorithm),"dynamics..."
+    write(6,"(a,1x,a,1x,a)") "#Starting",trim(algorithm),"dynamics..."
 
   end subroutine input_summary
 
