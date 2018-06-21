@@ -142,7 +142,6 @@ module tools
     if(check/=0) print*,'error mass'
     deallocate(vv_param,stat=check)
     if(check/=0) print*,'error allocation vv_param'
-    vv_param=1.0_dp
 
   end subroutine finalize
 

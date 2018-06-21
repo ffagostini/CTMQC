@@ -52,7 +52,7 @@ module coherence_corrections
         BOforce(trajlabel,i_dof,i)
      end do
 
-     nabla_dot_phase=BOforce(trajlabel,i_dof,state)-mean_force
+     nabla_dot_phase=BOforce(trajlabel,i_dof,state)!-mean_force
 
   end function nabla_dot_phase
 

@@ -11,17 +11,25 @@ module output
     real(kind=dp),intent(inout) :: Rcl(ntraj,n_dof),Vcl(ntraj,n_dof)
     complex(kind=dp),intent(in) :: BOsigma(ntraj,nstates,nstates)
     integer :: i,j,itraj,index_ij
+    real(kind=dp),allocatable :: potential_energy(:),kinetic_energy(:)
+    character :: output_movies
 
-    if(n_dof==1) then
+    allocate(potential_energy(ntraj),kinetic_energy(ntraj))
+
+    if(dble(nsteps)/dble(dump)<1000._dp) output_movies='y'
+
+    if(n_dof==1 .and. output_movies=='y') then
       call plot_coefficients(BOsigma,Rcl(:,1),time)
       call plot_histogram(Rcl(:,1),time)
       call plot_density(Rcl(:,1),time)
     end if
 
-    do itraj=1,ntraj
-      call compute_energy(BOsigma(itraj,:,:),BOenergy(itraj,:),itraj)
-    end do
-    call plot_R_P_E(Rcl,Vcl,time)
+    if(output_movies=='y') then
+      do itraj=1,ntraj
+        call compute_energy(BOsigma(itraj,:,:),BOenergy(itraj,:),itraj)
+      end do
+      call plot_R_P_E(Rcl,Vcl,time)
+    end if
 
     if(time==0) call initialize_output
 
@@ -49,6 +57,23 @@ module output
 
     write(88,'(f14.4,100f14.8)') dble(time)*dt,BO_coh
     write(89,'(f14.4,100f14.8)') dble(time)*dt,BO_pop
+
+    do itraj=1,ntraj
+      potential_energy(itraj)=0._dp
+      do j=1,nstates
+        potential_energy(itraj)=potential_energy(itraj)+ &
+          real(BOsigma(itraj,j,j),kind=dp)*BOenergy(itraj,j)
+      end do
+      kinetic_energy(itraj)=0._dp
+      do j=1,n_dof
+        kinetic_energy(itraj)=kinetic_energy(itraj)+ &
+          0.5_dp*(Vcl(itraj,j))**2*mass(j)
+      end do
+    end do
+    write(98,'(f14.4,1000f14.8)') dble(time)*dt, &
+      kinetic_energy+potential_energy
+
+    deallocate(potential_energy,kinetic_energy)
 
     if(time==nsteps) call finalize_output
 
@@ -277,6 +302,11 @@ module output
     if(ios/=0) print*,'error opening BO_population.dat'
     write(89,*) "#Time, Populations"
 
+    open(98,file="./output/total_energy.dat",status="replace", &
+      form="formatted",action="write",iostat=ios)
+    if(ios/=0) print*,'error opening total_energy.dat'
+    write(98,*) "#Time, Totla energy"
+
   end subroutine initialize_output
 
 
@@ -284,6 +314,7 @@ module output
 
     close(89)
     close(88)
+    close(98)
 
   end subroutine finalize_output
 
