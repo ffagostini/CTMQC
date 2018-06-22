@@ -40,7 +40,7 @@ module time_evolution
       !!!!$omp default(none)
       trajsloop: do itraj=1,ntraj
         call BOproblem(Rcl(itraj,:),itraj)
-        if(algorithm=="CTQMC" .or. algorithm=="CTeMQC") &
+        if(algorithm=="CTMQC" .or. algorithm=="CTeMQC") &
           call accumulated_BOforce(BOcoeff(itraj,:),my_force(itraj,:,:),itraj)
         call non_adiabatic_force(BOcoeff(itraj,:),classical_force, &
           my_force(itraj,:,:),k_li(itraj,:,:),itraj,Vcl(itraj,:))

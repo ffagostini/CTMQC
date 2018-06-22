@@ -88,7 +88,7 @@ module classical_evolution
     end do
 
     !Force with the quantum momentum
-    if(algorithm=="CTQMC") then
+    if(algorithm=="CTMQC") then
       do i_dof=1,n_dof
         do i=1,nstates
           do j=1,nstates
