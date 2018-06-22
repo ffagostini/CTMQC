@@ -39,6 +39,7 @@ module coefficients_evolution
     do i=1,nstates
       normalization=normalization+(abs(coeff(i)))**2
     end do
+    !write(6,*) normalization
     !!if(abs(normalization-1.0_dp)>zero) &
     coeff=coeff/sqrt(normalization)
 
