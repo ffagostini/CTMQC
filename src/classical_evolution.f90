@@ -48,13 +48,14 @@ module classical_evolution
   end function VV_velocity
 
 
-  subroutine non_adiabatic_force(coeff,force,acc_force,k_li,trajlabel,velocity)
+  subroutine non_adiabatic_force(coeff,force,acc_force,k_li,trajlabel, &
+    velocity,langevin_force)
 
     integer,intent(in) :: trajlabel
     complex(kind=dp),intent(in) :: coeff(nstates)
     real(kind=dp),intent(in) :: acc_force(n_dof,nstates),&
       k_li(nstates,nstates),velocity(n_dof)
-    real(kind=dp),intent(out) :: force(n_dof)
+    real(kind=dp),intent(out) :: force(n_dof),langevin_force(n_dof)
     integer :: i,j,i_dof,check,nrand
     complex(kind=dp),allocatable :: my_rho(:,:)
     real(kind=dp) :: noise,tmp_vector(2),variance
@@ -112,7 +113,10 @@ module classical_evolution
         tmp_vector=gaussian_distribution(xi,nrand,variance,0.0_dp,nrand)
         noise=tmp_vector(1)
         force(i_dof)=force(i_dof)- &
-          !viscosity*mass(i_dof)*velocity(i_dof)+
+          viscosity*mass(i_dof)*velocity(i_dof)+ &
+          vv_param(i_dof,3)*noise
+        langevin_force(i_dof)= &
+          viscosity*mass(i_dof)*velocity(i_dof)+ &
           vv_param(i_dof,3)*noise
       end do
       deallocate(xi)

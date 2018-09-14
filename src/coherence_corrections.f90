@@ -5,10 +5,11 @@ module coherence_corrections
 
   contains
 
-  subroutine accumulated_BOforce(coeff,force,trajlabel)
+  subroutine accumulated_BOforce(coeff,force,langevin_force,trajlabel)
 
     integer,intent(in) :: trajlabel
     complex(kind=dp),intent(in) :: coeff(nstates)
+    real(kind=dp),intent(in) :: langevin_force(n_dof)
     real(kind=dp),intent(out) :: force(n_dof,nstates)
     integer :: i,j,i_dof,check
     real(kind=dp),parameter :: threshold=0.005_dp
@@ -26,7 +27,8 @@ module coherence_corrections
       if(abs(rho(i,i))>threshold .and. abs(rho(i,i))<1.0_dp-threshold) then
         do i_dof=1,n_dof
           force(i_dof,i)=force(i_dof,i)+ &
-            dt*nabla_dot_phase(rho,i,i_dof,trajlabel)
+            dt*(nabla_dot_phase(rho,i,i_dof,trajlabel)+ &
+            langevin_force(i_dof))
         end do
       else
         force(:,i)=0.0_dp

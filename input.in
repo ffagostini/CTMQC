@@ -1,30 +1,33 @@
+
 &SYSTEM
-  MODEL_SYSTEM = 'marcus'
-  N_DOF = 1           ! Tully’s models are 1D
+  MODEL_SYSTEM = ''
+  N_DOF = 1           ! Tully s models are 1D
   X_POINTS = 24987     ! check with wc -l *_bopes.dat
-  Y_POINTS = 1        
+  Y_POINTS = 1
   Z_POINTS = 1
   NSTATES = 2
   EL_BASIS = 'adiabatic'
   DIA_TO_AD = 'y'
 /
 &DYNAMICS
-  ALGORITHM = 'CTMQC'
-  FINAL_TIME = 1.0E7
+  ALGORITHM = 'Ehrenfest' ! Ehrenfest, CTeMQC
+  FINAL_TIME = 200000.0
   DT = 10.0
-  DUMP = 20000
+  DUMP = 50
   INITIAL_BOSTATE = 0
   INITIAL_DIASTATE = 1
-  NTRAJ = 100
+  NTRAJ = 200
   R_INIT = -10.0
   K_INIT = 25.0
   SIGMA_INIT = 0.0      ! if sigma = 0.0, then sigma = 20/k0 in the code
   MASS_INPUT = 1.0
-  VISCOSITY = 1.875e-05
-  TEMPERATURE = 300.0
+  VISCOSITY = 0.0024
+  TEMPERATURE = 0.00095
 /
 &EXTERNAL_FILES
   PATH_TO_POTENTIALS = "./spin-boson-ctmqc/run-ctmqc-0/spin_boson_surfaces_nacv/"
   POSITIONS_FILE = "./spin-boson-ctmqc/run-ctmqc-0/config_init/positions.dat"
   MOMENTA_FILE = "./spin-boson-ctmqc/run-ctmqc-0/config_init/velocities.dat"
 /
+
+    

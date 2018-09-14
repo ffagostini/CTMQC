@@ -1,4 +1,4 @@
-FC = gfortran
+FC = gfortran-4.9
 CFLAG =  -Wall -pedantic -std=f95 -O3 -fopenmp -Wmaybe-uninitialized
 LFLAG = -llapack -lblas
 

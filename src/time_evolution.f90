@@ -10,7 +10,8 @@ module time_evolution
   use tools
   implicit none
 
-  real(kind=dp),allocatable :: Rcl(:,:),Vcl(:,:),classical_force(:)
+  real(kind=dp),allocatable :: Rcl(:,:),Vcl(:,:),classical_force(:), &
+    langevin_force(:,:)
   real(kind=dp),allocatable :: my_force(:,:,:),k_li(:,:,:)
   complex(kind=dp),allocatable :: BOsigma(:,:,:)
   complex(kind=dp),allocatable :: BOcoeff(:,:),DIAcoeff(:,:)
@@ -41,9 +42,11 @@ module time_evolution
       trajsloop: do itraj=1,ntraj
         call BOproblem(Rcl(itraj,:),itraj)
         if(algorithm=="CTMQC" .or. algorithm=="CTeMQC") &
-          call accumulated_BOforce(BOcoeff(itraj,:),my_force(itraj,:,:),itraj)
+          call accumulated_BOforce(BOcoeff(itraj,:),my_force(itraj,:,:), &
+          langevin_force(itraj,:),itraj)
         call non_adiabatic_force(BOcoeff(itraj,:),classical_force, &
-          my_force(itraj,:,:),k_li(itraj,:,:),itraj,Vcl(itraj,:))
+          my_force(itraj,:,:),k_li(itraj,:,:),itraj,Vcl(itraj,:), &
+          langevin_force(itraj,:))
         call RK4_coeff(Vcl(itraj,:),BOcoeff(itraj,:),k_li(itraj,:,:),itraj)
         call velocity_verlet(Rcl(itraj,:),Vcl(itraj,:),classical_force)
       end do trajsloop
@@ -101,9 +104,11 @@ module time_evolution
     allocate(Rcl(ntraj,n_dof),Vcl(ntraj,n_dof), &
       classical_force(n_dof),BOsigma(ntraj,nstates,nstates), &
       BOcoeff(ntraj,nstates),my_force(ntraj,n_dof,nstates),  &
-      k_li(ntraj,nstates,nstates),DIAcoeff(ntraj,nstates))
+      k_li(ntraj,nstates,nstates),DIAcoeff(ntraj,nstates), &
+      langevin_force(ntraj,n_dof))
 
     my_force=0.0_dp
+    langevin_force=0.0_dp
 
     do itraj=1,ntraj
       Rcl(itraj,:)=initial_positions(itraj,:)
@@ -162,6 +167,8 @@ module time_evolution
     deallocate(DIAcoeff,stat=check)
     if(check/=0) print*,'error DIAcoeff'
 
+    deallocate(langevin_force,stat=check)
+    if(check/=0) print*,'error langevin_force'
     deallocate(my_force,stat=check)
     if(check/=0) print*,'error my_force'
     deallocate(k_li,stat=check)
