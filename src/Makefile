@@ -1,5 +1,6 @@
 FC = gfortran
 CFLAG =  -Wall -pedantic -std=f95 -O3 -fopenmp -Wmaybe-uninitialized
+WFLAG = -fcheck=all -fbacktrace
 LFLAG = -llapack -lblas
 
 .SUFFIXES : .o .f90 .f

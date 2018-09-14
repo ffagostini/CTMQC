@@ -88,17 +88,17 @@ module classical_evolution
     end do
 
     !Force with the quantum momentum
-    if(algorithm=="CTMQC") then
-      do i_dof=1,n_dof
-        do i=1,nstates
-          do j=1,nstates
-            force(i_dof)=force(i_dof)+ &
-              0.5_dp*k_li(i,j)*(acc_force(i_dof,j)-acc_force(i_dof,i))* &
-              (real(my_rho(i,i),kind=dp)*real(my_rho(j,j),kind=dp))
-          end do
-        end do
-      end do
-    end if
+    !if(algorithm=="CTMQC") then
+    !  do i_dof=1,n_dof
+    !    do i=1,nstates
+    !      do j=1,nstates
+    !        force(i_dof)=force(i_dof)+ &
+    !          0.5_dp*k_li(i,j)*(acc_force(i_dof,j)-acc_force(i_dof,i))* &
+    !          (real(my_rho(i,i),kind=dp)*real(my_rho(j,j),kind=dp))
+    !      end do
+    !    end do
+    !  end do
+    !end if
 
     !Random and viscous force
     if(model_system=="marcus") then

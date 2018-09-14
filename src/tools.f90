@@ -174,10 +174,16 @@ module tools
 
     do i_dof=1,n_dof
       vv_param(i_dof,1)=exp(-viscosity*dt/mass(i_dof))
+!print*, 'vv_param(idof,1)', i_dof, vv_param(i_dof, 1)
+!print*, 1 - viscosity*dt/mass(i_dof)
       vv_param(i_dof,2)=(mass(i_dof)/viscosity)* &
         (1._dp-vv_param(i_dof,1)) / dt
+!print*, 'vv_param(idof,2)', i_dof, vv_param(i_dof, 2)
+!print*, 1.0
       vv_param(i_dof,3)=sqrt(mass(i_dof)*kB*temperature)* &
         sqrt(1._dp-(vv_param(i_dof,1))**2) / dt
+!print*, 'vv_param(idof,3)', i_dof, vv_param(i_dof, 3)
+!print*, sqrt(2*viscosity*kB*temperature/dt)
     end do
 
   end subroutine integrator_parameters
