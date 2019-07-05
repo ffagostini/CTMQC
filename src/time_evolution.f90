@@ -30,6 +30,9 @@ module time_evolution
     if(dia_to_ad=="y") call diabatic_output(Rcl,BOcoeff,time=0)
     call plot(BOsigma,Rcl,Vcl,time=0)
 
+    trajsloop1: do itraj=1, ntraj
+        Vcl(itraj, :) = VV_velocity(Vcl(itraj, :), classical_force(itraj, :))
+    end do trajsloop1
 
     timeloop: do time=1,nsteps
 
@@ -44,7 +47,6 @@ module time_evolution
         !call non_adiabatic_force(BOcoeff(itraj,:),classical_force, &
         ! my_force(itraj,:,:),k_li(itraj,:,:),itraj,Vcl(itraj,:))
         !call velocity_verlet(Rcl(itraj,:),Vcl(itraj,:),classical_force)
-        Vcl(itraj, :) = VV_velocity(Vcl(itraj, :), classical_force(itraj, :))
         Rcl(itraj, :) = VV_position(Rcl(itraj, :), Vcl(itraj, :))
         call BOproblem(Rcl(itraj,:),itraj)
         call RK4_coeff(Vcl(itraj,:),BOcoeff(itraj,:),k_li(itraj,:,:),itraj)

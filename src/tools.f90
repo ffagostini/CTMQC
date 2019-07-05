@@ -173,11 +173,16 @@ module tools
     integer :: i_dof
 
     do i_dof=1,n_dof
-      vv_param(i_dof,1)=exp(-viscosity*(dt/2.0_dp)/(mass(i_dof)))
+      !vv_param(i_dof,1)=exp(-viscosity*(dt/2.0_dp)/(mass(i_dof)))
+      !vv_param(i_dof,2)=(mass(i_dof)/viscosity)* &
+      !  (1._dp-vv_param(i_dof,1)) / (dt/2.0_dp)
+      !vv_param(i_dof,3)=sqrt(mass(i_dof)*kB*temperature)* &
+      !  sqrt(1._dp-(vv_param(i_dof,1))**2) / (dt/2.0_dp)
+      vv_param(i_dof,1)=exp(-viscosity*(dt/1.0_dp)/(mass(i_dof)))
       vv_param(i_dof,2)=(mass(i_dof)/viscosity)* &
-        (1._dp-vv_param(i_dof,1)) / (dt/2.0_dp)
+        (1._dp-vv_param(i_dof,1)) / (dt/1.0_dp)
       vv_param(i_dof,3)=sqrt(mass(i_dof)*kB*temperature)* &
-        sqrt(1._dp-(vv_param(i_dof,1))**2) / (dt/2.0_dp)
+        sqrt(1._dp-(vv_param(i_dof,1))**2) / (dt/1.0_dp)
     end do
 
   end subroutine integrator_parameters
