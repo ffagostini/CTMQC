@@ -44,17 +44,15 @@ module time_evolution
         !call non_adiabatic_force(BOcoeff(itraj,:),classical_force, &
         ! my_force(itraj,:,:),k_li(itraj,:,:),itraj,Vcl(itraj,:))
         !call velocity_verlet(Rcl(itraj,:),Vcl(itraj,:),classical_force)
-classical_force(itraj, :) = 0.0        
         Vcl(itraj, :) = VV_velocity(Vcl(itraj, :), classical_force(itraj, :))
         Rcl(itraj, :) = VV_position(Rcl(itraj, :), Vcl(itraj, :))
         call BOproblem(Rcl(itraj,:),itraj)
         call RK4_coeff(Vcl(itraj,:),BOcoeff(itraj,:),k_li(itraj,:,:),itraj)
-        !if(algorithm=="CTMQC" .or. algorithm=="CTeMQC") &
-        !  call accumulated_BOforce(BOcoeff(itraj,:),my_force(itraj,:,:),itraj)
-        !call non_adiabatic_force(BOcoeff(itraj,:),classical_force(itraj, :), &
-        !  my_force(itraj,:,:),k_li(itraj,:,:),itraj,Vcl(itraj,:))
-classical_force(itraj, :) = 0.0        
-Vcl(itraj, :) = VV_velocity(Vcl(itraj, :), classical_force(itraj, :))
+        if(algorithm=="CTMQC" .or. algorithm=="CTeMQC") &
+          call accumulated_BOforce(BOcoeff(itraj,:),my_force(itraj,:,:),itraj)
+        call non_adiabatic_force(BOcoeff(itraj,:),classical_force(itraj, :), &
+                                 my_force(itraj,:,:),k_li(itraj,:,:),itraj,Vcl(itraj,:))
+        Vcl(itraj, :) = VV_velocity(Vcl(itraj, :), classical_force(itraj, :))
         
       end do trajsloop
       !!!!$omp end parallel do
