@@ -36,13 +36,16 @@ module classical_evolution
 
   function VV_velocity(v,force) result(my_v)
 
-    real(kind=dp),intent(in) :: v(n_dof),force(n_dof)
+    real(kind=dp),intent(in) :: v(n_dof)
+    real(kind=dp),intent(in)    :: force(n_dof)
     real(kind=dp) :: my_v(n_dof)
 
     if(model_system=="marcus") then
-      my_v=vv_param(:,1)*v+0.50_dp*dt*force/mass
+      !my_v=vv_param(:,1)*v+0.50_dp*dt*force/mass
+      my_v=vv_param(:,1)*v+dt*force/mass
     else
-      my_v=v+0.50_dp*dt*force/mass
+      !my_v=v+0.50_dp*dt*force/mass
+      my_v=v+dt*force/mass
     end if
 
   end function VV_velocity
