@@ -21,7 +21,7 @@ module output
     if(n_dof==1 .and. output_movies=='y') then
       call plot_coefficients(BOsigma,Rcl(:,1),time)
       call plot_histogram(Rcl(:,1),time)
-      call plot_density(Rcl(:,1),time)
+      !call plot_density(Rcl(:,1),time)
     end if
 
     if(output_movies=='y') then
