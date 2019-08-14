@@ -80,11 +80,11 @@ module coherence_corrections
     gamma=0.0_dp
 
     if(time==1) then
-      dist_cutoff=M_parameter*minval(sigma)/dble(ntraj)
-      store_gamma=sqrt(minval(sigma)/dble(ntraj))!dist_cutoff
+      dist_cutoff=minval(sigma)
+      store_gamma=dist_cutoff
     end if
 
-    threshold=M_parameter*minval(sigma)/dble(ntraj)
+    threshold=minval(sigma)
 
     itrajloop: do itraj=1,ntraj
       avR=0._dp
