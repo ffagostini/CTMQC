@@ -156,7 +156,7 @@ module time_evolution
       end do
       call BOproblem(Rcl(itraj,:),itraj)
       call non_adiabatic_force(BOcoeff(itraj,:),classical_force(itraj, :), &
-          my_force(itraj,:,:),k_li(itraj,:,:),itraj,Vcl(itraj,:))
+          my_force(itraj,:,:),k_li(itraj,:,:),itraj,Vcl(itraj,:), langevin_force(itraj, :))
     end do
   end subroutine initialize_local_vars
 

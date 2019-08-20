@@ -1,6 +1,6 @@
 FC = gfortran
-#CFLAG =  -Wall -pedantic -std=f95 -O3 -fopenmp -Wmaybe-uninitialized -fcheck=all
-CFLAG =  -Wall -pedantic -std=f95 -O3 -fopenmp -Wmaybe-uninitialized 
+CFLAG =  -Wall -pedantic -std=f95 -O3 -fopenmp -Wmaybe-uninitialized -fcheck=all
+#CFLAG =  -Wall -pedantic -std=f95 -O3 -fopenmp -Wmaybe-uninitialized 
 LFLAG = -llapack -lblas
 
 .SUFFIXES : .o .f90 .f
